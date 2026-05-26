@@ -1,16 +1,134 @@
+/*
+=======================================================
+  HERO-SEKTION — 1-CELLE GRID-TEKNIKKEN
+=======================================================
+
+  HVAD ER PROBLEMET?
+  ------------------
+  En hero-sektion består typisk af tre lag:
+    1. Et baggrundsbillede (heroImage)
+    2. En navigation/header oven på billedet (heroHeader)
+    3. En tekstboks centreret oven på billedet (heroText)
+
+  Normalt fylder HTML-elementer plads fra top til bund —
+  de skubber hinanden ned. Det vil ødelægge effekten,
+  fordi vi ønsker at alle tre lag ligger præcis det
+  samme sted: oven på hinanden.
+
+  LØSNINGEN: 1-CELLE GRID
+  ------------------------
+  Vi giver hero-sektionen et CSS Grid med kun ét felt
+  (én kolonne og én række). Alle børne-elementer
+  placeres derefter manuelt i det samme felt.
+
+  Trin 1 — Opret et grid med ét felt:
+
+      display: grid;
+      grid-template-columns: 1fr;   ← én kolonne
+      grid-template-rows: 1fr;      ← én række
+
+  Trin 2 — Placer hvert børne-element i felt (1,1):
+
+      grid-column-start: 1;
+      grid-column-end:   2;
+      grid-row-start:    1;
+      grid-row-end:      2;
+
+  Fordi alle tre elementer bruger nøjagtig de samme
+  grid-koordinater, "stables" de oven på hinanden i
+  stedet for at stå under hinanden. Det er kernen i
+  1-celle grid-teknikken.
+
+  RÆKKEFØLGE (hvem ligger øverst?)
+  ---------------------------------
+  Elementer der kommer sidst i HTML-koden tegnes oven
+  på elementer der kommer tidligere. Derfor er
+  rækkefølgen i index.html vigtig:
+    1. <img id="heroImage">   — baggrundslaget
+    2. <div id="heroHeader">  — navigation
+    3. <div id="heroText">    — tekst forrest
+
+  FINJUSTERING MED align-self / justify-self
+  -------------------------------------------
+  Når elementer deler samme celle, kan du styre
+  placeringen inden for cellen:
+    align-self:   center  → centrerer lodret
+    justify-self: center  → centrerer vandret
+  Dette bruges på heroText for at centrere teksten
+  midt på billedet.
+=======================================================
+*/
 
 
-#heroSection{
+/* -------------------------------------------------------
+   PARENT: #heroSection
+   -------------------------------------------------------
+   Dette er forælderen (parent) — den store beholder
+   der indeholder alle tre lag i hero-sektionen.
+
+   Ved at sætte display: grid opretter vi et grid-layout.
+   grid-template-columns: 1fr  →  kun én kolonne
+   grid-template-rows: 1fr     →  kun én række
+
+   Resultatet er ét enkelt felt (en "celle") som alle
+   børnene (children) kan dele og ligge oven på hinanden i.
+------------------------------------------------------- */
+#heroSection {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
 
     width: 90%;
-
 }
 
 
-#heroHeader{
+/* -------------------------------------------------------
+   CHILD: #heroImage  (barn nr. 1 — bagerste lag)
+   -------------------------------------------------------
+   Dette er et barn (child) af #heroSection.
+
+   grid-column-start: 1 / grid-column-end: 2
+   grid-row-start: 1    / grid-row-end: 2
+   → Placerer billedet i den ene celle som forælderen har.
+
+   Fordi det er det FØRSTE barn i HTML-koden, tegnes det
+   allerbagerst — det fungerer som baggrundsbilledet.
+
+   width: 100% → billedet strækker sig til cellens fulde
+   bredde, så det dækker hele hero-sektionen.
+------------------------------------------------------- */
+#heroImage {
+    grid-column-start: 1;
+    grid-column-end: 2;
+
+    grid-row-start: 1;
+    grid-row-end: 2;
+
+    width: 100%;
+}
+
+
+/* -------------------------------------------------------
+   CHILD: #heroHeader  (barn nr. 2 — midterste lag)
+   -------------------------------------------------------
+   Dette er et barn (child) af #heroSection.
+
+   grid-column-start: 1 / grid-column-end: 2
+   grid-row-start: 1    / grid-row-end: 2
+   → Samme celle som #heroImage — de to elementer
+     ligger nu oven på hinanden.
+
+   Fordi det kommer EFTER #heroImage i HTML-koden,
+   tegnes det oven på billedet.
+
+   display: flex + flex-direction: row
+   → Inde i headeren bruges flexbox til at placere
+     logo og navigation ved siden af hinanden.
+
+   justify-content: space-between
+   → Skubber logo til venstre og nav til højre.
+------------------------------------------------------- */
+#heroHeader {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -19,53 +137,89 @@
     grid-column-end: 2;
 
     grid-row-start: 1;
-    grid-row-end:2;
+    grid-row-end: 2;
 
     padding: 0 10em 0 10em;
-  
-}
-
-#heroImage{
-  
-        grid-column-start: 1;
-    grid-column-end: 2;
-
-    grid-row-start: 1;
-    grid-row-end:2;
-
- width: 100%;
 }
 
 
-#logo{
-height: 100px;
+/* -------------------------------------------------------
+   CHILD: #logo  (barn af #heroHeader)
+   -------------------------------------------------------
+   Dette er et barn (child) af #heroHeader — ikke af
+   grid-forælderen. Det påvirkes derfor ikke af grid-
+   koordinater, men styres af flex-layoutet i #heroHeader.
+
+   height: 100px → sætter en fast højde på logo-billedet.
+------------------------------------------------------- */
+#logo {
+    height: 100px;
 }
 
-#heroText{
+
+/* -------------------------------------------------------
+   CHILD: #heroText  (barn nr. 3 — forreste lag)
+   -------------------------------------------------------
+   Dette er et barn (child) af #heroSection.
+
+   grid-column-start: 1 / grid-column-end: 2
+   grid-row-start: 1    / grid-row-end: 2
+   → Samme celle som de to andre — nu er alle tre lag
+     stablet oven på hinanden i den ene celle.
+
+   Fordi det er det SIDSTE barn i HTML-koden, tegnes det
+   øverst — teksten er altid synlig foran billedet.
+
+   align-self: center    → centrerer tekstboksen lodret
+                           inde i cellen (op/ned)
+   justify-self: center  → centrerer tekstboksen vandret
+                           inde i cellen (venstre/højre)
+
+   width: 30% → begrænser tekstens bredde så den ikke
+   strækker sig ud over hele skærmen.
+------------------------------------------------------- */
+#heroText {
     text-align: center;
-        grid-column-start: 1;
+
+    grid-column-start: 1;
     grid-column-end: 2;
 
     grid-row-start: 1;
-    grid-row-end:2;
-   
+    grid-row-end: 2;
+
     align-self: center;
-      justify-self: center;
-    
+    justify-self: center;
+
     width: 30%;
 }
 
 
-nav ul{
+/* -------------------------------------------------------
+   nav ul  (barn af nav, som er barn af #heroHeader)
+   -------------------------------------------------------
+   Navigationsmenuen bruger flexbox til at vise
+   menu-punkterne ved siden af hinanden på en vandret linje.
+
+   justify-content: space-between → lige stor afstand
+   align-items: center            → centrerer lodret
+   gap: 1em                       → luft mellem punkterne
+   list-style: none               → fjerner prikker/tal
+------------------------------------------------------- */
+nav ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1em;
     list-style: none;
-   
-    
 }
 
-nav ul a{
+
+/* -------------------------------------------------------
+   nav ul a  (barn af li, som er barn af ul)
+   -------------------------------------------------------
+   Fjerner den blå understregning fra navigationslinkene
+   så de ser mere rene og designmæssige ud.
+------------------------------------------------------- */
+nav ul a {
     text-decoration: none;
 }
