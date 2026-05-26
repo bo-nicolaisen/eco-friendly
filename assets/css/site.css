@@ -1,0 +1,71 @@
+
+
+#heroSection{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    width: 90%;
+
+}
+
+
+#heroHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    grid-column-start: 1;
+    grid-column-end: 2;
+
+    grid-row-start: 1;
+    grid-row-end:2;
+
+    padding: 0 10em 0 10em;
+  
+}
+
+#heroImage{
+  
+        grid-column-start: 1;
+    grid-column-end: 2;
+
+    grid-row-start: 1;
+    grid-row-end:2;
+
+ width: 100%;
+}
+
+
+#logo{
+height: 100px;
+}
+
+#heroText{
+    text-align: center;
+        grid-column-start: 1;
+    grid-column-end: 2;
+
+    grid-row-start: 1;
+    grid-row-end:2;
+   
+    align-self: center;
+      justify-self: center;
+    
+    width: 30%;
+}
+
+
+nav ul{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    list-style: none;
+   
+    
+}
+
+nav ul a{
+    text-decoration: none;
+}
